@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:netsuite="http://www.mulesoft.org/schema/mule/netsuite" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/netsuite http://www.mulesoft.org/schema/mule/netsuite/current/mule-netsuite.xsd">
+	<salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="fe90d90f-e097-40f2-b9ad-545649083225" >
+		<salesforce:basic-connection username="avatansh0912@salesforce.com" password="#Santosh0611" securityToken="cQC7II9pS3b95fLShAxSAxak" />
+	</salesforce:sfdc-config>
+	
+	<flow name="lead-to-contacts-demo-apiFlow" doc:id="c12bc4cb-ddd5-49c9-8ea9-cc9d2e5d2cd5" >
+		<salesforce:new-object-listener doc:name="On New Object" doc:id="0a608fbf-26d3-4285-8731-661f055db75f" config-ref="Salesforce_Config" objectType="Lead">
+			<scheduling-strategy >
+				<fixed-frequency frequency="10000" />
+			</scheduling-strategy>
+		</salesforce:new-object-listener>
+		<logger level="INFO" doc:name="Logger" doc:id="e7d38a82-1642-4e88-be20-47d617ec0ed9" message="On new create called"/>
+		<ee:transform doc:name="Transform Message" doc:id="a4d1e240-e8a6-4b08-8201-08d90760127a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+[{
+	LastName: payload.LastName,
+	FirstName: payload.FirstName,
+	Phone: payload.Phone,
+	Email: payload.Email,
+	Description: "Company - " ++ (payload.Company default "")
+}]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<salesforce:create doc:name="Create" doc:id="3893870d-272f-40d8-94ee-1f867b7878a0" config-ref="Salesforce_Config" type="Contact"/>
+		<logger level="INFO" doc:name="Logger" doc:id="c85cdfea-fa94-4392-8fe4-c2f4375b134c" message="Contact created"/>
+	</flow>
+
+</mule>
