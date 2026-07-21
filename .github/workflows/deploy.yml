@@ -1,0 +1,26 @@
+# Deploy to CloudHub 2.0. Thin caller that delegates to the shared reusable workflow.
+# Deploys on ANY PR merge (into any base branch — the orchestrator's PR path) and can be
+# triggered manually for any environment. The reusable workflow reports cd-result back to
+# the orchestrator (signed with CD_WEBHOOK_SECRET), so no bespoke notify job is needed here.
+#
+# Pin @main to a tag (e.g. @v1) once mule-ci-cd is released.
+name: Deploy to CH2.0
+
+on:
+  pull_request:
+    types: [closed]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Anypoint environment"
+        required: true
+        default: dev
+
+jobs:
+  deploy:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true }}
+    uses: avatansh/mule-ci-cd/.github/workflows/deploy-ch2.yml@main
+    with:
+      environment: ${{ github.event.inputs.environment || 'dev' }}
+      extra-maven-args: "-Dch2.runtimeEnv=${{ github.event.inputs.environment || 'dev' }}"
+    secrets: inherit
