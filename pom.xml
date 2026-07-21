@@ -13,9 +13,13 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<app.runtime>4.5.1</app.runtime>
-		<mule.maven.plugin.version>4.1.0</mule.maven.plugin.version>
-	</properties>
+		<app.runtime>4.9.18</app.runtime>
+		<mule.maven.plugin.version>4.10.0</mule.maven.plugin.version>
+	    <app.runtime.semver>4.9.18</app.runtime.semver>
+    <java.version>17</java.version>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+  </properties>
 
 	<build>
 		<plugins>
@@ -37,19 +41,19 @@
 		<dependency>
 			<groupId>org.mule.connectors</groupId>
 			<artifactId>mule-http-connector</artifactId>
-			<version>1.8.0</version>
+			<version>1.11.3</version>
 			<classifier>mule-plugin</classifier>
 		</dependency>
 		<dependency>
 			<groupId>org.mule.connectors</groupId>
 			<artifactId>mule-sockets-connector</artifactId>
-			<version>1.2.3</version>
+			<version>1.2.8</version>
 			<classifier>mule-plugin</classifier>
 		</dependency>
 		<dependency>
 			<groupId>com.mulesoft.connectors</groupId>
 			<artifactId>mule-salesforce-connector</artifactId>
-			<version>10.18.7</version>
+			<version>10.19.2</version>
 			<classifier>mule-plugin</classifier>
 		</dependency>
 		<dependency>
