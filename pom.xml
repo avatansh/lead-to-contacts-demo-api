@@ -15,6 +15,22 @@
 
 		<app.runtime>4.5.1</app.runtime>
 		<mule.maven.plugin.version>4.1.0</mule.maven.plugin.version>
+
+		<!-- ══════════════════════════════════════════════════════════════════
+		 CloudHub 2.0 deployment knobs. The shared CI deploy workflow overrides
+		 env/target/javaVersion/replicas/vCores with -D flags; the defaults below
+		 also let a plain `mvn clean deploy -DmuleDeploy` work locally. The
+		 Connected App clientId/secret are NEVER committed here — they come from
+		 -D overrides or .mvn/settings.xml.
+		 ══════════════════════════════════════════════════════════════════ -->
+		<anypoint.orgId>2e14f8c6-4d60-481b-bfb6-798695efc8f4</anypoint.orgId>
+		<ch2.environment>dev</ch2.environment>
+		<ch2.target>Cloudhub-US-East-2</ch2.target>
+		<ch2.appName>lead-to-contacts-demo-api</ch2.appName>
+		<ch2.muleVersion>4.9.18</ch2.muleVersion>
+		<ch2.javaVersion>17</ch2.javaVersion>
+		<ch2.replicas>1</ch2.replicas>
+		<ch2.vCores>0.1</ch2.vCores>
 	</properties>
 
 	<build>
@@ -29,6 +45,26 @@
 				<artifactId>mule-maven-plugin</artifactId>
 				<version>${mule.maven.plugin.version}</version>
 				<extensions>true</extensions>
+				<configuration>
+					<classifier>mule-application</classifier>
+					<!-- CloudHub 2.0 deployment. Values come from the ch2.* properties above.
+					     Deploy with: mvn clean deploy -DmuleDeploy -->
+					<cloudhub2Deployment>
+						<uri>https://anypoint.mulesoft.com</uri>
+						<provider>MC</provider>
+						<environment>${ch2.environment}</environment>
+						<target>${ch2.target}</target>
+						<muleVersion>${ch2.muleVersion}</muleVersion>
+						<javaVersion>${ch2.javaVersion}</javaVersion>
+						<applicationName>${ch2.appName}</applicationName>
+						<replicas>${ch2.replicas}</replicas>
+						<vCores>${ch2.vCores}</vCores>
+						<businessGroupId>${anypoint.orgId}</businessGroupId>
+						<connectedAppClientId>${connectedApp.clientId}</connectedAppClientId>
+						<connectedAppClientSecret>${connectedApp.clientSecret}</connectedAppClientSecret>
+						<connectedAppGrantType>client_credentials</connectedAppGrantType>
+					</cloudhub2Deployment>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
@@ -55,7 +91,7 @@
 		<dependency>
 			<groupId>com.mulesoft.connectors</groupId>
 			<artifactId>mule-netsuite-connector</artifactId>
-			<version>12.0.0</version>
+			<version>11.7.9</version>
 			<classifier>mule-plugin</classifier>
 		</dependency>
 	</dependencies>
